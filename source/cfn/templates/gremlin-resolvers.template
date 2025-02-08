@@ -61,11 +61,16 @@ Resources:
       GroupDescription: Security group for Gremlin AppSync lambda
       VpcId: !Ref VpcId
       SecurityGroupEgress:
-        - Description: Restrict egress to VPC only
+        - Description: Restrict egress to neptune in VPC only
           CidrIp: !Ref VPCCidrBlock
           IpProtocol: tcp
           ToPort: !Ref NeptuneClusterPort
           FromPort: !Ref NeptuneClusterPort
+        - Description: Allow UDP egress to DNS resolvers
+          CidrIp: !Ref VPCCidrBlock
+          IpProtocol: udp
+          ToPort: 53
+          FromPort: 53
 
   NeptuneDbSgIngressRule:
     Type: AWS::EC2::SecurityGroupIngress
@@ -318,3 +323,4 @@ Resources:
       TypeName: Query
       FieldName: getResourcesRegionMetadata
       DataSourceName: !Ref AppSyncSettingsLambdaDataSourceName
+
